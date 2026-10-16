@@ -17,7 +17,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Serif+KR:wght@500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
-<link rel="stylesheet" href="style.css?v=2">
+<link rel="stylesheet" href="style.css?v=3">
 </head>
 <body>
 <canvas id="glow" aria-hidden="true"></canvas>
@@ -84,7 +84,7 @@
     <header class="page-head">
       <p class="page-kicker">EAT · 食</p>
       <h2>우리 가족 맞춤 메뉴판</h2>
-      <p class="page-desc">식당마다 <b class="tag-a">장인·장모님</b>께 맞는 순한 메뉴와 <b class="tag-t">우리 가족 3명</b>이 먹을 메뉴를 골라뒀어요. 끼니마다 2~3곳 중에서 그날 컨디션에 맞춰 고르세요.</p>
+      <p class="page-desc">식당마다 <b class="tag-a">장인·장모님</b>과 <b class="tag-t">우리 가족 3명</b>에게 어울리는 메뉴를 골라뒀어요. 끼니마다 2~3곳 중에서 그날 끌리는 곳으로 고르세요.</p>
     </header>
     <div class="chips" id="foodFilters"></div>
     <div class="food-list" id="foodList"></div>
@@ -128,19 +128,8 @@
       <p class="page-desc">10월 중순 진도는 낮엔 선선하고 해가 지면 바닷바람이 차요. 겹쳐 입을 옷을 챙기세요!</p>
     </header>
 
-    <div class="care">
-      <h3>🫁 장인어른 편한 여행 원칙</h3>
-      <ul>
-        <li><b>걷기는 짧게, 앉아서 즐기기</b>: 실내 공연, 케이블카, 차창 드라이브 위주로 짰어요. 장소마다 일정 카드에 <b>걷기 부담(초록·노랑·빨강)</b>을 표시했어요.</li>
-        <li><b>문 앞 하차</b>: 운전자가 입구 앞에서 먼저 내려드리고 주차는 따로 해요.</li>
-        <li><b>1시간마다 쉼표</b>: 차 안·벤치·카페에서 앉아 쉬는 시간을 일정 사이에 넣었어요.</li>
-        <li><b>찬 공기·습기 피하기</b>: 저녁 바닷바람과 야외 풀(염소·습기)은 폐에 부담이 될 수 있어요. 인피니티풀 시간엔 객실에서 쉬세요.</li>
-        <li><b>약은 두 곳에</b>: 흡입기·상비약을 가방과 차에 하나씩 두세요.</li>
-        <li><b>숨이 차시면 즉시 멈추기</b>: 일정은 언제든 빼도 돼요. 각 카드의 ‘2번 선택지’가 쉬운 대안이에요. 응급 시엔 <b>119</b>.</li>
-      </ul>
-    </div>
 
-    <div class="weather" style="margin-top:14px">
+    <div class="weather">
       <div class="w-main">
         <div class="w-temp">22°<small>/ 13°</small></div>
         <div class="w-label">10월 중순 평균 최고 / 최저</div>
@@ -162,7 +151,7 @@
       <summary>🚗 운전 · 주차 요령</summary>
       <ul class="dots">
         <li>광양 → 진도는 <b>남해고속도로 → 해남 → 진도대교</b>, 약 170km·2시간 10분이에요. 내비 목적지는 1일차 <b>‘진도 신호등회관’</b>(점심)으로 하세요.</li>
-        <li>휴게소는 가는 길·오는 길에 <b>한 번씩</b> 들러요(보성녹차휴게소 등). 장인어른이 다리를 펴고 물을 드시게 하세요.</li>
+        <li>휴게소는 가는 길·오는 길에 <b>한 번씩</b> 들러요(보성녹차휴게소 등). 다 같이 다리 펴고 쉬어 가요.</li>
         <li>진도읍 식당(이화식당·달님이네)은 <b>전용 주차장이 없어요</b>. 진도우체국, 전통시장, 군청 주변 공영주차장을 이용하세요.</li>
         <li>운림산방, 진도타워, 케이블카, 세방낙조는 <b>주차장이 넓고 무료</b>예요.</li>
         <li>세방낙조 해안도로는 굽은 길이 많아요. 멀미가 있는 사람은 앞좌석에 앉으세요.</li>
@@ -249,7 +238,7 @@
 <div class="toast" id="toast" role="status"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" defer></script>
-<script src="data.js?v=2" defer></script>
-<script src="app.js?v=2" defer></script>
+<script src="data.js?v=3" defer></script>
+<script src="app.js?v=3" defer></script>
 </body>
 </html>

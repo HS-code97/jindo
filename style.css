@@ -415,7 +415,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 }
 
 /* ============ 진도판 추가 스타일 ============ */
-/* 어르신 동선(걷기 부담) 표시 */
+/* 동선(걷기) 표시 */
 .walk { display: inline-flex; align-items: center; gap: 4px; margin-top: 3px; font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 6px; }
 .walk.w1 { background: #e3f4ec; color: #1f7a55; }
 .walk.w2 { background: #fdf1d8; color: #9a6a00; }
@@ -423,17 +423,9 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .sh-walk { margin: 0 0 14px; padding: 12px 14px; border-radius: 14px; background: #f1f8f4; border: 1px solid #d4ebdf; font-size: 13.5px; color: #275d46; }
 .sh-walk b { display: block; font-size: 12px; letter-spacing: .04em; margin-bottom: 2px; color: #1f7a55; }
 .tl-care { margin-top: 8px; padding: 8px 10px; border-radius: 10px; background: #f1f8f4; color: #275d46; font-size: 12.5px; line-height: 1.5; }
-.tl-care::before { content: "🫁 "; }
+.tl-care::before { content: "💡 "; }
 .tl-place-main em { color: var(--adult); }
 
-/* 장인어른 케어 카드 */
-.care { margin: 14px 16px 0; padding: 18px; border-radius: 22px; color: #fff;
-  background: linear-gradient(135deg, rgba(31,138,138,.35), rgba(43,123,191,.18)); border: 1px solid rgba(127,216,208,.4); }
-.care h3 { margin: 0 0 8px; font-family: var(--serif); font-size: 19px; }
-.care ul { margin: 0; padding-left: 18px; }
-.care li { margin: 6px 0; font-size: 14px; color: #e2f4f2; }
-.care li b { color: #fff; }
-.ov-care { margin-top: 8px; background: rgba(31,138,138,.16) !important; border-color: rgba(127,216,208,.45) !important; }
 
 /* 경비 계산기 */
 .cost-row { display: grid; grid-template-columns: 1fr 112px; gap: 8px; align-items: center; padding: 7px 0; border-top: 1px solid var(--line); font-size: 13.5px; }

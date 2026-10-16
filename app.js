@@ -126,8 +126,7 @@
             <i class="ov-dot" style="background:${d.hue};color:${d.hue}"></i>
           </button>`).join("")}
       </div>
-      <p class="ov-note">🏨 숙소: 쏠비치 호텔&amp;리조트 진도 (의신면 · 바다 전망)<br>🦀 꽃게 밥상 · 🥁 토요민속공연 · 🎨 운림산방 · 🌊 인피니티풀 · 🚡 해상케이블카<br>🕘 광양 09:30 출발 → 다음 날 17:00 전 도착</p>
-      <p class="ov-note ov-care">🫁 장인어른 배려: 하루 걷는 시간을 30분 안팎으로 줄이고, 실내 공연·케이블카·차창 드라이브처럼 앉아서 즐기는 일정으로 짰어요. 카드마다 <b>🟢 걷기 편함 / 🟡 조금 걸음</b> 표시와 초록색 배려 메모를 확인하세요.</p>`;
+      <p class="ov-note">🏨 숙소: 쏠비치 호텔&amp;리조트 진도 (의신면 · 바다 전망)<br>🦀 꽃게 밥상 · 🥁 토요민속공연 · 🎨 운림산방 · 🌊 인피니티풀 · 🚡 해상케이블카<br>🕘 광양 09:30 출발 → 다음 날 17:00 전 도착</p>`;
     $$(".ov-item").forEach(b => b.onclick = () => { selectDay(+b.dataset.go); $("#daybarWrap").scrollIntoView({ behavior: "smooth" }); });
   }
 
@@ -231,7 +230,7 @@
         <div class="dh-sub">${esc(d.subtitle)}</div>
         <div class="dh-meta">
           <span>🌡️ ${d.temp}</span><span>🌇 일몰 ${d.sunset}</span>
-          <span>🫁 체력 부담 ${"●".repeat(d.stamina)}${"○".repeat(3 - d.stamina)}</span>
+          <span>🚶 활동량 ${"●".repeat(d.stamina)}${"○".repeat(3 - d.stamina)}</span>
           ${d.holiday ? `<span class="dh-holiday">🧺 ${esc(d.holiday)}</span>` : ""}
         </div>
       </div>
@@ -313,7 +312,7 @@
           ${p.price ? `<span>💳 ${esc(p.price)}</span>` : ""}
         </div>
         <p>${esc(p.desc)}</p>
-        ${p.walk ? `<div class="sh-walk"><b>🫁 장인어른 동선 · ${WALK[p.walk[0]][1]}</b>${esc(p.walk[1])}</div>` : ""}
+        ${p.walk ? `<div class="sh-walk"><b>🚶 동선 · ${WALK[p.walk[0]][1]}</b>${esc(p.walk[1])}</div>` : ""}
         ${p.menu ? `<h4>🍽️ 우리 가족 맞춤 메뉴</h4>${menuHTML(p)}` : ""}
         ${p.tips?.length ? `<h4>💡 알아두면 좋은 팁</h4><ul class="sh-tips">${p.tips.map(t => `<li>${esc(t)}</li>`).join("")}</ul>` : ""}
         <div class="sh-actions">
