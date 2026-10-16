@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#141a33">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>보배섬 진도, 가을 노을</title>
+<meta name="description" content="장인·장모님과 우리 가족 5명의 진도 쏠비치 1박 2일 (2026.10.17 – 10.18) 일정, 맛집, 지도, 준비물">
+<meta property="og:title" content="🌅 보배섬 진도, 가을 노을 — 다섯 식구 1박 2일">
+<meta property="og:description" content="10.17(토) – 10.18(일) · 일정 · 맛집 · 지도 · 특산품">
+<meta property="og:image" content="https://tong.visitkorea.or.kr/cms/resource/56/4062456_image2_1.jpg">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌅</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Serif+KR:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+<canvas id="glow" aria-hidden="true"></canvas>
+
+<main id="app">
+  <!-- ============ 일정 ============ -->
+  <section class="view active" id="view-plan" aria-label="일정">
+    <header class="hero" id="hero">
+      <div class="hero-bg" id="heroBg"></div>
+      <div class="hero-inner">
+        <p class="hero-kicker"><span class="star">★</span> JINDO · 2026 AUTUMN <span class="jp">珍島</span></p>
+        <h1 class="hero-title">보배섬 진도,<br>가을 노을</h1>
+        <p class="hero-sub">장인·장모님과 우리 가족, 다섯이 함께하는 1박 2일</p>
+        <div class="hero-dates">
+          <span>10.17 <small>토</small></span><i></i><span>10.18 <small>일</small></span>
+        </div>
+        <div class="countdown" id="countdown"></div>
+        <div class="crew">
+          <span class="crew-chip">👴👵 장인·장모님 2</span>
+          <span class="crew-chip">👨‍👩‍👧 우리 가족 3</span>
+          <span class="crew-chip">🚗 광양 출발</span>
+        </div>
+        <button class="share-btn" id="shareBtn" type="button">
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M18 16a3 3 0 0 0-2.4 1.2l-6.7-3.4a3 3 0 0 0 0-1.6l6.7-3.4A3 3 0 1 0 15 7l-6.7 3.4a3 3 0 1 0 0 3.2L15 17a3 3 0 1 0 3-1Z"/></svg>
+          가족에게 공유
+        </button>
+      </div>
+      <div class="hero-scroll" aria-hidden="true">▾</div>
+    </header>
+
+    <div class="overview" id="overview"></div>
+
+    <div class="daybar-wrap" id="daybarWrap">
+      <div class="daybar" id="daybar" role="tablist"></div>
+    </div>
+    <div id="dayPanel"></div>
+  </section>
+
+  <!-- ============ 지도 ============ -->
+  <section class="view" id="view-map" aria-label="지도">
+    <header class="page-head">
+      <p class="page-kicker">MAP · 地圖</p>
+      <h2>우리 동선 한눈에</h2>
+      <p class="page-desc">핀을 누르면 장소 정보가 열려요. 진도읍·쏠비치·진도대교는 아래 버튼으로 이동하세요.</p>
+    </header>
+    <div class="map-filters" id="mapFilters"></div>
+    <div class="map-box"><div id="map"></div></div>
+    <div class="jump-row" id="jumpRow">
+      <button data-fly="eup">🏘️ 진도읍</button>
+      <button data-fly="resort">🏨 쏠비치·운림산방</button>
+      <button data-fly="bridge">🌉 진도대교</button>
+      <button data-fly="sebang">🌅 세방낙조</button>
+      <button data-fly="all">🗺️ 전체</button>
+    </div>
+    <div class="stay-note">
+      <b>🏨 숙소: 쏠비치 호텔&amp;리조트 진도 · 의신면 송군길 30-40</b> 진도읍에서 차로 약 25분, 운림산방에서 약 20분이에요. 진도대교(섬 입구)까지는 약 40분 걸려요.<br>
+      <b>🚗 광양 ↔ 진도</b> 남해고속도로를 타고 약 170km, 2시간 10분 안팎이에요. 광양은 지도 밖이라 핀이 없어요.
+    </div>
+  </section>
+
+  <!-- ============ 맛집 ============ -->
+  <section class="view" id="view-food" aria-label="맛집">
+    <header class="page-head">
+      <p class="page-kicker">EAT · 食</p>
+      <h2>우리 가족 맞춤 메뉴판</h2>
+      <p class="page-desc">식당마다 <b class="tag-a">장인·장모님</b>께 맞는 순한 메뉴와 <b class="tag-t">우리 가족 3명</b>이 먹을 메뉴를 골라뒀어요. 끼니마다 2~3곳 중에서 그날 컨디션에 맞춰 고르세요.</p>
+    </header>
+    <div class="chips" id="foodFilters"></div>
+    <div class="food-list" id="foodList"></div>
+  </section>
+
+  <!-- ============ 특산품 ============ -->
+  <section class="view" id="view-shop" aria-label="특산품">
+    <header class="page-head">
+      <p class="page-kicker">SHOP · 特産</p>
+      <h2>진도 특산품 장보기</h2>
+      <p class="page-desc">1일차 진도장(7일장) 장날에 구경하고, 2일차에 사서 돌아가요. 체크한 항목은 이 폰에 저장돼요.</p>
+    </header>
+    <div class="donki-progress" id="shopProgress"></div>
+    <div id="shopList"></div>
+
+    <div class="card soft">
+      <h3>🧺 어디서 살까?</h3>
+      <ul class="dots">
+        <li><b>진도장(진도조금시장)</b>: 진도읍 조금시장길 25. 매월 <b>2·7일</b> 오일장이 서고, <b>10/17(토)이 장날</b>이에요. 간재미·건어물·돌미역·울금·구기자·검정쌀이 다 모여요.</li>
+        <li><b>진도수산시장</b>: 진도읍 남동1길. 이화식당·신호등회관과 걸어서 갈 수 있는 거리예요.</li>
+        <li><b>진도아리랑몰</b>(군 직영 온라인몰): 울금·구기자·홍주·전복·곱창김 등 320여 품목을 팔아요. 무거운 건 집에 와서 주문해도 돼요.</li>
+        <li><b>진도타워·꿈의세계카페 1층</b>: 진도개 기념품, 민예품, 도자기.</li>
+      </ul>
+    </div>
+
+    <div class="card soft">
+      <h3>🎁 진도 기념품 베스트</h3>
+      <div class="souv">
+        <span>🟡 진도 울금</span><span>🔴 진도 홍주</span><span>🍒 구기자차</span>
+        <span>🍙 검정쌀</span><span>🌿 진도 대파</span><span>🟢 곱창김</span>
+        <span>🌊 돌미역</span><span>🐚 활전복</span><span>🐕 진도개 굿즈</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 준비 ============ -->
+  <section class="view" id="view-info" aria-label="여행 준비">
+    <header class="page-head">
+      <p class="page-kicker">READY · 準備</p>
+      <h2>출발 전 체크</h2>
+      <p class="page-desc">10월 중순 진도는 낮엔 선선하고 해가 지면 바닷바람이 차요. 겹쳐 입을 옷을 챙기세요!</p>
+    </header>
+
+    <div class="care">
+      <h3>🫁 장인어른 편한 여행 원칙</h3>
+      <ul>
+        <li><b>걷기는 짧게, 앉아서 즐기기</b>: 실내 공연, 케이블카, 차창 드라이브 위주로 짰어요. 장소마다 일정 카드에 <b>걷기 부담(초록·노랑·빨강)</b>을 표시했어요.</li>
+        <li><b>문 앞 하차</b>: 운전자가 입구 앞에서 먼저 내려드리고 주차는 따로 해요.</li>
+        <li><b>1시간마다 쉼표</b>: 차 안·벤치·카페에서 앉아 쉬는 시간을 일정 사이에 넣었어요.</li>
+        <li><b>찬 공기·습기 피하기</b>: 저녁 바닷바람과 야외 풀(염소·습기)은 폐에 부담이 될 수 있어요. 인피니티풀 시간엔 객실에서 쉬세요.</li>
+        <li><b>약은 두 곳에</b>: 흡입기·상비약을 가방과 차에 하나씩 두세요.</li>
+        <li><b>숨이 차시면 즉시 멈추기</b>: 일정은 언제든 빼도 돼요. 각 카드의 ‘2번 선택지’가 쉬운 대안이에요. 응급 시엔 <b>119</b>.</li>
+      </ul>
+    </div>
+
+    <div class="weather" style="margin-top:14px">
+      <div class="w-main">
+        <div class="w-temp">22°<small>/ 13°</small></div>
+        <div class="w-label">10월 중순 평균 최고 / 최저</div>
+      </div>
+      <div class="w-grid">
+        <div><b>06:41</b><span>해 뜸</span></div>
+        <div><b>17:59</b><span>해 짐</span></div>
+        <div><b>약 9°</b><span>일교차</span></div>
+        <div><b>강함</b><span>바닷바람</span></div>
+      </div>
+    </div>
+
+    <details class="acc" open>
+      <summary>🧳 준비물 체크리스트 <span class="acc-count" id="packCount"></span></summary>
+      <div id="packList"></div>
+    </details>
+
+    <details class="acc">
+      <summary>🚗 운전 · 주차 요령</summary>
+      <ul class="dots">
+        <li>광양 → 진도는 <b>남해고속도로 → 해남 → 진도대교</b>, 약 170km·2시간 10분이에요. 내비 목적지는 1일차 <b>‘진도 신호등회관’</b>(점심)으로 하세요.</li>
+        <li>휴게소는 가는 길·오는 길에 <b>한 번씩</b> 들러요(보성녹차휴게소 등). 장인어른이 다리를 펴고 물을 드시게 하세요.</li>
+        <li>진도읍 식당(이화식당·달님이네)은 <b>전용 주차장이 없어요</b>. 진도우체국, 전통시장, 군청 주변 공영주차장을 이용하세요.</li>
+        <li>운림산방, 진도타워, 케이블카, 세방낙조는 <b>주차장이 넓고 무료</b>예요.</li>
+        <li>세방낙조 해안도로는 굽은 길이 많아요. 멀미가 있는 사람은 앞좌석에 앉으세요.</li>
+        <li>귀갓길 <b>14:20 출발</b>이 마지노선이에요. 17시 전에 도착하려면 케이블카 시간을 늘리지 마세요.</li>
+      </ul>
+    </details>
+
+    <details class="acc">
+      <summary>🌊 인피니티풀 이용 안내</summary>
+      <ul class="dots">
+        <li><b>10/12~10/16 정기 휴장</b> → 10/17(토)부터 다시 운영해요. 재개장 첫날이니 <b>전날 031-899-7000</b>으로 운영 여부를 확인하세요.</li>
+        <li>10월 운영 <b>10:00~21:00</b>, 키즈풀 주말 10:00~20:00 (중간풀·키즈풀 교차 운영).</li>
+        <li>복장: 수영복, 래시가드, 같은 재질의 반바지·반팔만 돼요. 청바지·면티는 안 돼요.</li>
+        <li>스노클·풀페이스 수경·오리발·물총은 금지예요. 튜브·킥판은 1m 이하만, 공은 비치볼만 돼요.</li>
+        <li>외부 음식, 돗자리, 유모차는 반입할 수 없어요.</li>
+        <li>145cm 미만은 메인풀(1.2m)에서 <b>구명조끼 + 보호자 동반</b>이 필수예요.</li>
+        <li>패키지 상품이면 프런트에서 <b>이용권(종이)</b>을 먼저 받아야 해요.</li>
+      </ul>
+    </details>
+
+    <details class="acc">
+      <summary>🗣️ 진도 말 한마디 <small>(탭하면 소리로 들려줘요)</small></summary>
+      <div class="phrases" id="phrases"></div>
+    </details>
+
+    <div class="card soft">
+      <h3>💰 예상 경비 &amp; 정산</h3>
+      <div id="costList"></div>
+      <div class="cost-sum" id="costSum"></div>
+      <p class="small" style="margin:10px 0 0">숫자를 고치면 바로 다시 계산되고, 이 폰에 저장돼요. 숙박비는 빼고 계산했어요.</p>
+    </div>
+
+    <div class="card emergency">
+      <h3>🚨 긴급 · 예약 연락처</h3>
+      <a href="tel:119">🚑 구급·화재 <b>119</b></a>
+      <a href="tel:112">🚓 경찰 <b>112</b></a>
+      <a href="https://www.e-gen.or.kr/egen/search_emergency_room.do" target="_blank" rel="noopener">🏥 가까운 응급실 찾기 (응급의료포털) <b>e-gen ›</b></a>
+      <a href="tel:0318997000">🏨 쏠비치 진도 대표번호 <b>031-899-7000</b></a>
+      <a href="tel:050714134449">🦀 신호등회관 <b>0507-1413-4449</b></a>
+      <a href="tel:0615423335">🍚 달님이네맛집 <b>061-542-3335</b></a>
+      <a href="tel:050714865688">🐟 이화식당 <b>0507-1486-5688</b></a>
+      <a href="tel:0615441073">🐙 용천식당 <b>061-544-1073</b></a>
+      <a href="tel:050713827265">🍣 씨푸드테이블 <b>0507-1382-7265</b></a>
+      <a href="tel:050713657796">🐚 해녀소녀식당 <b>0507-1365-7796</b></a>
+      <a href="tel:0615359900">🚡 명량해상케이블카 <b>061-535-9900</b></a>
+      <p class="small">출발 전에 네이버지도에서 ‘진도 응급실’을 검색해 즐겨찾기에 저장해 두세요.</p>
+    </div>
+
+    <details class="acc">
+      <summary>📷 사진 출처</summary>
+      <p class="small">사진은 한국관광공사(visitkorea·ktriptips)와 Wikimedia Commons에서 가져왔어요. 일부 식당은 대표 요리 사진(참고 이미지)이에요.</p>
+      <ul class="credits" id="credits"></ul>
+    </details>
+
+    <div class="card soft">
+      <h3>🕒 출발 전 꼭 확인</h3>
+      <p>① 인피니티풀 재개장(10/17) ② 토요민속여행 공연 여부(진도군청) ③ 토요일 점심·저녁 식당 예약 ④ 케이블카 당일 운행(바람). 영업시간과 휴무일은 출발 직전에 지도 앱으로 한 번 더 확인하세요.</p>
+    </div>
+
+    <footer class="foot">
+      <p>🌅 다섯 식구의 보배섬 진도 · 2026 가을</p>
+      <p class="small">영업시간·요금은 바뀔 수 있으니 방문 전에 확인하세요.</p>
+    </footer>
+  </section>
+</main>
+
+<!-- 하단 탭바 -->
+<nav class="tabbar" id="tabbar" aria-label="메뉴">
+  <button class="tab active" data-view="plan"><svg viewBox="0 0 24 24"><path d="M7 3v2M17 3v2M4 8h16M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z"/><path d="M8 12h3M8 16h6"/></svg><span>일정</span></button>
+  <button class="tab" data-view="map"><svg viewBox="0 0 24 24"><path d="M12 21s-6-5.3-6-11a6 6 0 1 1 12 0c0 5.7-6 11-6 11Z"/><circle cx="12" cy="10" r="2.3"/></svg><span>지도</span></button>
+  <button class="tab" data-view="food"><svg viewBox="0 0 24 24"><path d="M5 11h14a7 7 0 0 1-14 0ZM4 21h16M9 3c0 2 1.5 2 1.5 4M13 3c0 2 1.5 2 1.5 4"/></svg><span>맛집</span></button>
+  <button class="tab" data-view="shop"><svg viewBox="0 0 24 24"><path d="M4 9h16l-1.5 11h-13L4 9Z"/><path d="M8 9l4-6 4 6M9 13v3M15 13v3"/></svg><span>특산품</span></button>
+  <button class="tab" data-view="info"><svg viewBox="0 0 24 24"><path d="M9 4h6M10 4v3M14 4v3M6 7h12a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1Z"/><path d="M9 13l2 2 4-4"/></svg><span>준비</span></button>
+</nav>
+
+<!-- 장소 상세 바텀시트 -->
+<div class="sheet-backdrop" id="sheetBackdrop" hidden></div>
+<article class="sheet" id="sheet" aria-modal="true" role="dialog" aria-hidden="true">
+  <div class="sheet-grip" id="sheetGrip"><i></i></div>
+  <button class="sheet-close" id="sheetClose" aria-label="닫기">✕</button>
+  <div class="sheet-body" id="sheetBody"></div>
+</article>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" defer></script>
+<script src="data.js?v=1" defer></script>
+<script src="app.js?v=1" defer></script>
+</body>
+</html>
