@@ -18,12 +18,22 @@
   // 일정 카드의 선택지: options가 있으면 1·2·3번, 없으면 카드 자체가 하나의 선택지
   const optsOf = it => it.options || [{ title: it.title, text: it.text, place: it.place }];
 
-  // 장소가 등장하는 날짜 매핑
-  const placeDays = {};
-  DAYS.forEach((d, i) => d.items.forEach(it => optsOf(it).forEach(o => {
-    if (!o.place) return;
-    (placeDays[o.place] ||= new Set()).add(i);
-  })));
+  // 선택한 일정: 주소 ?plan=2 → 이 폰에 저장된 선택 → 기본(일정 1)
+  const planById = id => PLANS.find(p => p.id === id);
+  const urlPlan = new URLSearchParams(location.search).get("plan");
+  let plan = planById("p" + urlPlan) || planById(store.get("plan", "")) || PLANS[0];
+  let DAYS = plan.days;
+
+  // 장소가 등장하는 날짜 매핑 (일정을 바꾸면 다시 계산)
+  let placeDays = {};
+  function computePlaceDays() {
+    placeDays = {};
+    DAYS.forEach((d, i) => d.items.forEach(it => optsOf(it).forEach(o => {
+      if (!o.place) return;
+      (placeDays[o.place] ||= new Set()).add(i);
+    })));
+  }
+  computePlaceDays();
 
   /* ---------- 윤슬 캔버스 (바다 위 반짝임이 천천히 떠오름) ---------- */
   function glow() {
@@ -106,7 +116,8 @@
   /* ---------- 개요 ---------- */
   function overview() {
     $("#overview").innerHTML = `
-      <h2 class="ov-title">한눈에 보는 1박 2일</h2>
+      <h2 class="ov-title">한눈에 보는 1박 2일 · ${esc(plan.label)}</h2>
+      <p class="ov-plan"><b>${esc(plan.label)} · ${esc(plan.title)}</b><br>${esc(plan.note)}</p>
       <div class="ov-list">
         ${DAYS.map((d, i) => `
           <button class="ov-item" data-go="${i}">
@@ -202,11 +213,6 @@
     });
   }
 
-  const TEAM_NOTE = {
-    all: "저녁 19:45부터는 두 팀으로 나뉘어요. 물놀이팀은 인피니티풀, 쉼팀(장인·장모님)은 객실에서 쉬다가 21:15에 다 같이 모여요.",
-    pool: "🌊 물놀이팀: 우리 가족 3명이 인피니티풀에서 놀아요 (21:00 마감).",
-    rest: "🛋️ 쉼팀: 장인·장모님은 따뜻한 객실에서 쉬어요. 발코니로 불 켜진 풀이 보여요.",
-  };
   function renderDay() {
     const d = DAYS[curDay];
     let items = d.items.map((it, k) => ({ ...it, k }));
@@ -215,7 +221,9 @@
       items.sort((a, b) => a.time.localeCompare(b.time) || a.k - b.k);
     }
     const nowIdx = nowItemIndex(d, items);
-    const missionDone = store.get("mission:" + d.id, []);
+    const missionKey = "mission:" + plan.id + ":" + d.id;
+    const missionDone = store.get(missionKey, []);
+    const teamNote = d.teamNote || {};
     $("#dayPanel").innerHTML = `
       <div class="day-head" style="--hue:${d.hue}">
         <div class="dh-label">${d.label} · 10월 ${+d.date.slice(8)}일 (${d.dow})</div>
@@ -231,15 +239,15 @@
         <div class="team-switch" id="teamSwitch">
           <button data-team="all">👨‍👩‍👧‍👦 전체</button>
           <button data-team="pool">🌊 물놀이팀</button>
-          <button data-team="rest">🛋️ 쉼팀</button>
+          <button data-team="rest">🌅 발코니팀</button>
         </div>
-        <p class="team-note">${TEAM_NOTE[team] || TEAM_NOTE.all}</p>` : ""}
+        <p class="team-note">${esc(teamNote[team] || teamNote.all || "")}</p>` : ""}
       <div class="timeline">
         ${items.map((it, k) => {
           const opts = optsOf(it), multi = !!it.options;
           const key = d.id + ":" + it.k;
           const sel = multi ? Math.min(optSel[key] || 0, opts.length - 1) : 0;
-          const badge = it.team === "rest" ? '<span class="tl-badge girls">🛋️ 쉼팀 · 장인·장모님</span>' : it.team === "pool" ? '<span class="tl-badge boy">🌊 물놀이팀 · 우리 가족</span>' : "";
+          const badge = it.team === "rest" ? '<span class="tl-badge girls">🌅 발코니팀 · 나·장인어른</span>' : it.team === "pool" ? '<span class="tl-badge boy">🌊 물놀이팀 · 장모님·아내·딸</span>' : "";
           return `
           <div class="tl-item">
             <div class="tl-time"><b>${it.time}</b><div class="tl-icon">${it.icon}</div></div>
@@ -273,7 +281,7 @@
     $$(".tl-card[data-key]", $("#dayPanel")).forEach(card => bindOptTabs(card, d, items));
     $$(".mission input").forEach(cb => cb.onchange = () => {
       const done = $$(".mission input").filter(x => x.checked).map(x => +x.dataset.m);
-      store.set("mission:" + d.id, done);
+      store.set(missionKey, done);
       if (cb.checked) toast("미션 완료! 🌅");
     });
     if (d.split) {
@@ -443,6 +451,19 @@
       maxZoom: 19,
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(map);
+    layer = L.layerGroup().addTo(map);
+    drawMarkers();
+    $$("#jumpRow button").forEach(b => b.onclick = () => {
+      const k = b.dataset.fly;
+      if (k === "all") map.flyToBounds(allBounds(), { duration: 1 });
+      else map.flyToBounds(VIEWS[k], { duration: 1 });
+    });
+    map.fitBounds(allBounds());
+  }
+  // 마커·동선·날짜 필터 (일정을 바꾸면 다시 그림)
+  let layer;
+  function drawMarkers() {
+    layer.clearLayers(); markers = {};
     Object.entries(PLACES).forEach(([id, p]) => {
       if (!p.lat) return;
       const di = [...(placeDays[id] || [])];
@@ -451,24 +472,17 @@
         className: "", iconSize: [34, 34], iconAnchor: [4, 34], popupAnchor: [13, -30],
         html: `<div class="pin${id === HOME ? " home" : ""}" style="background:${color}"><span>${p.emoji}</span></div>`,
       });
-      const m = L.marker([p.lat, p.lng], { icon, zIndexOffset: id === HOME ? 1000 : 0 }).addTo(map);
+      const m = L.marker([p.lat, p.lng], { icon, zIndexOffset: id === HOME ? 1000 : 0 }).addTo(layer);
       m.bindPopup(`<div class="pop"><b>${p.emoji} ${esc(p.name)}</b><span>${esc(p.area || "")} ${di.map(i => DAYS[i].label).join(" · ")}</span><br><button data-pop="${id}">자세히 보기</button></div>`);
       m.on("popupopen", e => { e.popup.getElement().querySelector("[data-pop]").onclick = () => openSheet(id); });
       markers[id] = { m, days: id === HOME ? [0, 1] : di };
     });
-    // 동선 (차량 이동 순서)
-    const route = (ids, color) => L.polyline(ids.map(i => [PLACES[i].lat, PLACES[i].lng]), { color, weight: 3, opacity: .75, dashArray: "6 8" }).addTo(map);
-    route(["bridge", "shinhodeung", "market", "minsok", "unrim", "solbeach"], DAYS[0].hue);
-    route(["solbeach", "sebang", "ihwa", "cablecar"], "#3bb7ad");
+    // 동선 (차량 이동 순서) — 일정마다 다름
+    plan.routes.forEach((ids, i) => L.polyline(ids.map(k => [PLACES[k].lat, PLACES[k].lng]),
+      { color: DAYS[i].hue, weight: 3, opacity: .8, dashArray: "6 8" }).addTo(layer));
     $("#mapFilters").innerHTML = [["all", "전체", "#fff"], ...DAYS.map((d, i) => [String(i), `${d.label} · ${d.title}`, d.hue])]
       .map(([k, l, c]) => `<button class="chip" data-mf="${k}"><i style="background:${c}"></i>${esc(l)}</button>`).join("");
     $$("#mapFilters .chip").forEach(b => b.onclick = () => filterMap(b.dataset.mf));
-    $$("#jumpRow button").forEach(b => b.onclick = () => {
-      const k = b.dataset.fly;
-      if (k === "all") map.flyToBounds(allBounds(), { duration: 1 });
-      else map.flyToBounds(VIEWS[k], { duration: 1 });
-    });
-    map.fitBounds(allBounds());
     filterMap("all");
   }
   const allBounds = () => L.latLngBounds(Object.values(markers).map(x => x.m.getLatLng())).pad(.08);
@@ -478,7 +492,7 @@
     const vis = [];
     Object.entries(markers).forEach(([id, { m, days }]) => {
       const show = k === "all" || days.includes(+k);
-      if (show) { m.addTo(map); vis.push(m.getLatLng()); } else m.remove();
+      if (show) { layer.addLayer(m); vis.push(m.getLatLng()); } else layer.removeLayer(m);
     });
     if (k !== "all" && vis.length) map.flyToBounds(L.latLngBounds(vis).pad(.15), { duration: .9, maxZoom: 15 });
   }
@@ -572,10 +586,11 @@
   let tt;
   function toast(msg) { const t = $("#toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(tt); tt = setTimeout(() => t.classList.remove("show"), 1600); }
   $("#shareBtn").onclick = async () => {
-    const data = { title: "🌅 보배섬 진도, 가을 노을", text: "장인·장모님과 함께하는 진도 1박 2일 일정 (2026.10.17–10.18)", url: location.href };
+    const url = location.origin + location.pathname + "?plan=" + plan.id.slice(1);
+    const data = { title: "🌅 보배섬 진도, 가을 노을", text: `장인·장모님과 함께하는 진도 1박 2일 — ${plan.label}: ${plan.title} (2026.10.17–10.18)`, url };
     try {
       if (navigator.share) await navigator.share(data);
-      else { await navigator.clipboard.writeText(location.href); toast("링크를 복사했어요 📋"); }
+      else { await navigator.clipboard.writeText(url); toast("링크를 복사했어요 📋"); }
     } catch {}
   };
 
@@ -595,7 +610,29 @@
       slides[i].classList.remove("on"); i = (i + 1) % slides.length; slides[i].classList.add("on");
     }, 8000);
   })();
-  glow(); countdown(); overview(); daybar();
+  /* ---------- 일정 선택 (맨 위 [일정 1] [일정 2]) ---------- */
+  function planSwitch() {
+    $("#planSwitch").innerHTML = PLANS.map(p => `
+      <button class="plan-btn${p.id === plan.id ? " active" : ""}" data-plan="${p.id}" aria-pressed="${p.id === plan.id}">
+        <b>${esc(p.label)}</b><span>${esc(p.short)}</span>
+      </button>`).join("");
+    $$(".plan-btn").forEach(b => b.onclick = () => setPlan(b.dataset.plan));
+  }
+  function setPlan(id) {
+    if (id === plan.id) return;
+    plan = planById(id); DAYS = plan.days;
+    store.set("plan", plan.id);
+    history.replaceState(history.state, "", "?plan=" + plan.id.slice(1));
+    computePlaceDays();
+    planSwitch(); overview(); daybar();
+    const t = todayIndex();
+    selectDay(t >= 0 ? t : Math.min(curDay, DAYS.length - 1));
+    renderFood();
+    if (map) { drawMarkers(); map.flyToBounds(allBounds(), { duration: .8 }); }
+    toast(`${plan.label} · ${plan.title}`);
+  }
+
+  glow(); countdown(); planSwitch(); overview(); daybar();
   const ti = todayIndex();
   selectDay(ti >= 0 ? ti : store.get("day", 0));
   foodView(); shopView(); infoView();
