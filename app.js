@@ -380,8 +380,8 @@
     ["d0", "DAY 1"], ["d1", "DAY 2"],
   ];
   const SWEET = new Set(["cafe"]);
-  const NEAR = new Set(["yongcheon", "seafood", "haenyeo"]);
-  const EUP = new Set(["shinhodeung", "dalnim", "ihwa"]);
+  const NEAR = new Set(["yongcheon", "seafood", "haenyeo", "grill", "chefs"]);
+  const EUP = new Set(["shinhodeung", "dalnim", "ihwa", "bobae", "kongbat"]);
   let foodFilter = "all";
   function foodView() {
     $("#foodFilters").innerHTML = FOOD_FILTERS.map(([k, l]) => `<button class="chip" data-f="${k}">${l}</button>`).join("");
