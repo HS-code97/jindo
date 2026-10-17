@@ -18,11 +18,9 @@
   // 일정 카드의 선택지: options가 있으면 1·2·3번, 없으면 카드 자체가 하나의 선택지
   const optsOf = it => it.options || [{ title: it.title, text: it.text, place: it.place }];
 
-  // 선택한 일정: 주소 ?plan=2 → 이 폰에 저장된 선택 → 기본(일정 1)
-  const planById = id => PLANS.find(p => p.id === id);
-  const urlPlan = new URLSearchParams(location.search).get("plan");
-  let plan = planById("p" + urlPlan) || planById(store.get("plan", "")) || PLANS[0];
-  let DAYS = plan.days;
+  // 확정 일정
+  const plan = PLANS[0];
+  const DAYS = plan.days;
 
   // 장소가 등장하는 날짜 매핑 (일정을 바꾸면 다시 계산)
   let placeDays = {};
@@ -116,8 +114,8 @@
   /* ---------- 개요 ---------- */
   function overview() {
     $("#overview").innerHTML = `
-      <h2 class="ov-title">한눈에 보는 1박 2일 · ${esc(plan.label)}</h2>
-      <p class="ov-plan"><b>${esc(plan.label)} · ${esc(plan.title)}</b><br>${esc(plan.note)}</p>
+      <h2 class="ov-title">한눈에 보는 1박 2일</h2>
+      <p class="ov-plan"><b>${esc(plan.title)}</b><br>${esc(plan.note)}</p>
       <div class="ov-list">
         ${DAYS.map((d, i) => `
           <button class="ov-item" data-go="${i}">
@@ -126,8 +124,8 @@
             <i class="ov-dot" style="background:${d.hue};color:${d.hue}"></i>
           </button>`).join("")}
       </div>
-      <p class="ov-note">🏨 숙소: 쏠비치 호텔&amp;리조트 진도 (의신면 · 바다 전망)<br>🦀 꽃게 밥상 · 🥁 토요민속공연 · 🎨 운림산방 · 🌊 인피니티풀 · 🚡 해상케이블카<br>🕘 광양 09:30 출발 → 다음 날 17:00 전 도착</p>`;
-    $$(".ov-item").forEach(b => b.onclick = () => { selectDay(+b.dataset.go); $("#daybarWrap").scrollIntoView({ behavior: "smooth" }); });
+      <p class="ov-note">🏨 숙소: 쏠비치 호텔&amp;리조트 진도 (의신면 · 바다 전망)<br>🦀 꽃게 밥상 · 🧺 진도장 장날 · 🎨 운림산방 · 🌊 인피니티풀 · 🚡 해상케이블카<br>🕘 광양 09:30 출발 → 다음 날 17:00 전 도착</p>`;
+    $$(".ov-item").forEach(b => b.onclick = () => { selectDay(+b.dataset.go); scrollToDayHead(); });
   }
 
   /* ---------- 일정 ---------- */
@@ -139,7 +137,7 @@
         <b style="color:${d.hue}">${d.label}${i === ti ? '<span class="today">TODAY</span>' : ""}</b>
         <span>10/${+d.date.slice(8)}</span><small>${d.dow}</small>
       </button>`).join("");
-    $$(".day-chip").forEach(b => b.onclick = () => selectDay(+b.dataset.i));
+    $$(".day-chip").forEach(b => b.onclick = () => { selectDay(+b.dataset.i); scrollToDayHead(); });
   }
   function selectDay(i) {
     curDay = i;
@@ -289,8 +287,14 @@
         b.onclick = () => { team = b.dataset.team; store.set("team", team); renderDay(); };
       });
     }
-    $("#prevDay").onclick = () => { selectDay(curDay - 1); $("#daybarWrap").scrollIntoView({ behavior: "smooth" }); };
-    $("#nextDay").onclick = () => { selectDay(curDay + 1); $("#daybarWrap").scrollIntoView({ behavior: "smooth" }); };
+    $("#prevDay").onclick = () => { selectDay(curDay - 1); scrollToDayHead(); };
+    $("#nextDay").onclick = () => { selectDay(curDay + 1); scrollToDayHead(); };
+  }
+  // 날짜 헤더(DAY 카드)가 고정된 날짜 바 바로 아래 오도록 부드럽게 스크롤
+  function scrollToDayHead() {
+    const head = $(".day-head"); if (!head) return;
+    const bar = $("#daybarWrap").offsetHeight;
+    scrollTo({ top: head.getBoundingClientRect().top + scrollY - bar - 6, behavior: "smooth" });
   }
 
   /* ---------- 바텀시트 ---------- */
@@ -585,8 +589,8 @@
   let tt;
   function toast(msg) { const t = $("#toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(tt); tt = setTimeout(() => t.classList.remove("show"), 1600); }
   $("#shareBtn").onclick = async () => {
-    const url = location.origin + location.pathname + "?plan=" + plan.id.slice(1);
-    const data = { title: "🌅 보배섬 진도, 가을 노을", text: `장인·장모님과 함께하는 진도 1박 2일 — ${plan.label}: ${plan.title} (2026.10.17–10.18)`, url };
+    const url = location.origin + location.pathname;
+    const data = { title: "🌅 보배섬 진도, 가을 노을", text: "장인·장모님과 함께하는 진도 1박 2일 (2026.10.17–10.18)", url };
     try {
       if (navigator.share) await navigator.share(data);
       else { await navigator.clipboard.writeText(url); toast("링크를 복사했어요 📋"); }
@@ -609,29 +613,7 @@
       slides[i].classList.remove("on"); i = (i + 1) % slides.length; slides[i].classList.add("on");
     }, 8000);
   })();
-  /* ---------- 일정 선택 (맨 위 [일정 1] [일정 2]) ---------- */
-  function planSwitch() {
-    $("#planSwitch").innerHTML = PLANS.map(p => `
-      <button class="plan-btn${p.id === plan.id ? " active" : ""}" data-plan="${p.id}" aria-pressed="${p.id === plan.id}">
-        <b>${esc(p.label)}</b><span>${esc(p.short)}</span>
-      </button>`).join("");
-    $$(".plan-btn").forEach(b => b.onclick = () => setPlan(b.dataset.plan));
-  }
-  function setPlan(id) {
-    if (id === plan.id) return;
-    plan = planById(id); DAYS = plan.days;
-    store.set("plan", plan.id);
-    history.replaceState(history.state, "", "?plan=" + plan.id.slice(1));
-    computePlaceDays();
-    planSwitch(); overview(); daybar();
-    const t = todayIndex();
-    selectDay(t >= 0 ? t : Math.min(curDay, DAYS.length - 1));
-    renderFood();
-    if (map) { drawMarkers(); map.flyToBounds(allBounds(), { duration: .8 }); }
-    toast(`${plan.label} · ${plan.title}`);
-  }
-
-  glow(); countdown(); planSwitch(); overview(); daybar();
+  glow(); countdown(); overview(); daybar();
   const ti = todayIndex();
   selectDay(ti >= 0 ? ti : store.get("day", 0));
   foodView(); shopView(); infoView();
