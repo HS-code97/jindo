@@ -17,7 +17,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Serif+KR:wght@500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
-<link rel="stylesheet" href="style.css?v=4">
+<link rel="stylesheet" href="style.css?v=5">
 </head>
 <body>
 <canvas id="glow" aria-hidden="true"></canvas>
@@ -65,6 +65,12 @@
     </header>
     <div class="map-filters" id="mapFilters"></div>
     <div class="map-box"><div id="map"></div></div>
+    <div class="map-legend" aria-label="핀 색상 안내">
+      <span><i style="background:#e8453c"></i>숙소</span>
+      <span><i style="background:#f59f00"></i>식당·카페</span>
+      <span><i style="background:#2f7fd8"></i>관광지</span>
+      <span>· 점선은 날짜별 이동 동선</span>
+    </div>
     <div class="jump-row" id="jumpRow">
       <button data-fly="eup">🏘️ 진도읍</button>
       <button data-fly="resort">🏨 쏠비치·운림산방</button>
@@ -237,7 +243,7 @@
 <div class="toast" id="toast" role="status"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" defer></script>
-<script src="data.js?v=4" defer></script>
-<script src="app.js?v=4" defer></script>
+<script src="data.js?v=5" defer></script>
+<script src="app.js?v=5" defer></script>
 </body>
 </html>

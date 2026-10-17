@@ -240,7 +240,10 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .stay-note code { background: rgba(255,255,255,.1); padding: 1px 5px; border-radius: 4px; }
 .pin { width: 34px; height: 34px; border-radius: 50% 50% 50% 4px; transform: rotate(-45deg); display: grid; place-items: center; border: 2px solid #fff; box-shadow: 0 4px 12px rgba(0,0,0,.35); }
 .pin span { transform: rotate(45deg); font-size: 16px; }
-.pin.home { background: var(--star) !important; width: 40px; height: 40px; }
+.pin.home { width: 40px; height: 40px; }
+.map-legend { display: flex; flex-wrap: wrap; gap: 6px 14px; padding: 12px 18px 0; color: #fbe3d3; font-size: 13px; }
+.map-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.map-legend i { width: 14px; height: 14px; border-radius: 50% 50% 50% 3px; transform: rotate(-45deg); border: 2px solid #fff; }
 .leaflet-popup-content-wrapper { border-radius: 14px; }
 .leaflet-popup-content { margin: 12px 14px; font-family: var(--sans); }
 .pop b { display: block; font-size: 14px; }

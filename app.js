@@ -440,6 +440,8 @@
   /* ---------- 지도 ---------- */
   let map, markers = {}, mapFilter = "all";
   const HOME = "solbeach";
+  // 핀 배경색: 숙소 · 식당 · 관광지 3가지로 통일
+  const PIN_COLOR = { stay: "#e8453c", food: "#f59f00", spot: "#2f7fd8" };
   const VIEWS = {
     eup: [[34.476, 126.256], [34.489, 126.274]],
     resort: [[34.396, 126.296], [34.470, 126.342]],
@@ -470,7 +472,7 @@
     Object.entries(PLACES).forEach(([id, p]) => {
       if (!p.lat) return;
       const di = [...(placeDays[id] || [])];
-      const color = id === HOME ? "#ff6b4a" : di.length ? DAYS[Math.min(...di)].hue : "#f6b48a";
+      const color = PIN_COLOR[p.type];
       const icon = L.divIcon({
         className: "", iconSize: [34, 34], iconAnchor: [4, 34], popupAnchor: [13, -30],
         html: `<div class="pin${id === HOME ? " home" : ""}" style="background:${color}"><span>${p.emoji}</span></div>`,
